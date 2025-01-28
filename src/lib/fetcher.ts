@@ -1,5 +1,4 @@
 import { buildQueryString } from "./utils";
-import { useFetcherSettings } from "../provider";
 
 export const fetchWithSettings = async<T>(
   endpoint: string,
