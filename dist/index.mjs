@@ -1,5 +1,4 @@
 // src/data-fetcher/index.tsx
-import React2 from "react";
 import {
   useQuery
 } from "@tanstack/react-query";
@@ -32,7 +31,8 @@ var fetchWithSettings = async (endpoint, requestOptions = {}, queryParams, baseU
 };
 
 // src/provider.tsx
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
+import { jsx } from "react/jsx-runtime";
 var defaultSettings = {
   baseUrl: "",
   headers: { "Content-Type": "application/json" }
@@ -42,13 +42,14 @@ var DataFetcherProvider = ({
   settings,
   children
 }) => {
-  return /* @__PURE__ */ React.createElement(FetcherContext.Provider, { value: { ...defaultSettings, ...settings } }, children);
+  return /* @__PURE__ */ jsx(FetcherContext.Provider, { value: { ...defaultSettings, ...settings }, children });
 };
 var useFetcherSettings = () => {
   return useContext(FetcherContext);
 };
 
 // src/data-fetcher/index.tsx
+import { Fragment, jsx as jsx2 } from "react/jsx-runtime";
 function DataFetcher({
   queryKey,
   queryFn,
@@ -69,14 +70,15 @@ function DataFetcher({
     queryFn: fetcher,
     ...options
   });
-  return /* @__PURE__ */ React2.createElement(React2.Fragment, null, children({ ...queryResult }));
+  return /* @__PURE__ */ jsx2(Fragment, { children: children({ ...queryResult }) });
 }
 
 // src/infinite-data-fetcher/index.tsx
-import React3, { useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   useInfiniteQuery
 } from "@tanstack/react-query";
+import { Fragment as Fragment2, jsx as jsx3, jsxs } from "react/jsx-runtime";
 function InfiniteDataFetcher({
   queryKey,
   queryFn,
@@ -128,7 +130,7 @@ function InfiniteDataFetcher({
     ...options
   });
   const observerRef = useRef(null);
-  React3.useEffect(() => {
+  useEffect(() => {
     if (!observerRef.current || enableManualFetch) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -141,33 +143,36 @@ function InfiniteDataFetcher({
     observer.observe(observerRef.current);
     return () => observer.disconnect();
   }, [enableManualFetch, fetchNextPage, hasNextPage, isFetchingNextPage]);
-  const renderFetchTrigger = React3.useMemo(() => {
+  const renderFetchTrigger = useMemo(() => {
     if (isFetchingNextPage && loadingComponent) {
       return loadingComponent;
     }
     if (!hasNextPage && noMoreDataComponent) {
       return noMoreDataComponent;
     }
-    return triggerComponent || /* @__PURE__ */ React3.createElement(
+    return triggerComponent || /* @__PURE__ */ jsx3(
       "button",
       {
         type: "button",
         onClick: () => fetchNextPage(),
         "aria-label": "Load more",
-        disabled: isFetchingNextPage
-      },
-      isFetchingNextPage ? "Loading..." : "Load More"
+        disabled: isFetchingNextPage,
+        children: isFetchingNextPage ? "Loading..." : "Load More"
+      }
     );
   }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent]);
-  return /* @__PURE__ */ React3.createElement(React3.Fragment, null, children({
-    data: data?.pages,
-    error,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch
-  }), enableManualFetch ? renderFetchTrigger : /* @__PURE__ */ React3.createElement("div", { ref: observerRef }));
+  return /* @__PURE__ */ jsxs(Fragment2, { children: [
+    children({
+      data: data?.pages,
+      error,
+      isLoading,
+      isFetchingNextPage,
+      hasNextPage,
+      fetchNextPage,
+      refetch
+    }),
+    enableManualFetch ? renderFetchTrigger : /* @__PURE__ */ jsx3("div", { ref: observerRef })
+  ] });
 }
 export {
   DataFetcher,

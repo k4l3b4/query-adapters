@@ -1,3 +1,4 @@
+import * as react_jsx_runtime from 'react/jsx-runtime';
 import React, { ReactNode } from 'react';
 import { QueryKey, UseQueryOptions, UseQueryResult, UseInfiniteQueryOptions, FetchNextPageOptions, InfiniteQueryObserverResult, RefetchOptions, QueryFunctionContext } from '@tanstack/react-query';
 
@@ -16,7 +17,7 @@ interface DataFetcherProps$1<TData, TError> {
         refetch: UseQueryResult<TData, TError>['refetch'];
     }) => ReactNode;
 }
-declare function DataFetcher<TData, TError>({ queryKey, queryFn, url, queryParams, options, children, }: DataFetcherProps$1<TData, TError>): React.JSX.Element;
+declare function DataFetcher<TData, TError>({ queryKey, queryFn, url, queryParams, options, children, }: DataFetcherProps$1<TData, TError>): react_jsx_runtime.JSX.Element;
 
 interface DataFetcherProps<TData, TError> {
     queryKey: QueryKey;
@@ -58,7 +59,7 @@ interface InfiniteDataFetcherProps<TItem, TError> {
     noMoreDataComponent?: ReactNode;
 }
 
-declare function InfiniteDataFetcher<TItem, TError>({ queryKey, queryFn, url, queryParams, options, children, enableManualFetch, triggerComponent, loadingComponent, noMoreDataComponent, }: InfiniteDataFetcherProps<TItem, TError>): React.JSX.Element;
+declare function InfiniteDataFetcher<TItem, TError>({ queryKey, queryFn, url, queryParams, options, children, enableManualFetch, triggerComponent, loadingComponent, noMoreDataComponent, }: InfiniteDataFetcherProps<TItem, TError>): react_jsx_runtime.JSX.Element;
 
 declare const fetchWithSettings: <T>(endpoint: string, requestOptions?: RequestInit, queryParams?: Record<string, unknown>, baseUrl?: string, globalOptions?: RequestInit) => Promise<T>;
 

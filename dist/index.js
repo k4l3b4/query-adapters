@@ -1,5 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }// src/data-fetcher/index.tsx
-var _react = require('react'); var _react2 = _interopRequireDefault(_react);
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }// src/data-fetcher/index.tsx
 
 
 var _reactquery = require('@tanstack/react-query');
@@ -32,7 +31,8 @@ var fetchWithSettings = async (endpoint, requestOptions = {}, queryParams, baseU
 };
 
 // src/provider.tsx
-
+var _react = require('react');
+var _jsxruntime = require('react/jsx-runtime');
 var defaultSettings = {
   baseUrl: "",
   headers: { "Content-Type": "application/json" }
@@ -42,13 +42,14 @@ var DataFetcherProvider = ({
   settings,
   children
 }) => {
-  return /* @__PURE__ */ _react2.default.createElement(FetcherContext.Provider, { value: { ...defaultSettings, ...settings } }, children);
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, FetcherContext.Provider, { value: { ...defaultSettings, ...settings }, children });
 };
 var useFetcherSettings = () => {
   return _react.useContext.call(void 0, FetcherContext);
 };
 
 // src/data-fetcher/index.tsx
+
 function DataFetcher({
   queryKey,
   queryFn,
@@ -69,10 +70,11 @@ function DataFetcher({
     queryFn: fetcher,
     ...options
   });
-  return /* @__PURE__ */ _react2.default.createElement(_react2.default.Fragment, null, children({ ...queryResult }));
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _jsxruntime.Fragment, { children: children({ ...queryResult }) });
 }
 
 // src/infinite-data-fetcher/index.tsx
+
 
 
 
@@ -128,7 +130,7 @@ function InfiniteDataFetcher({
     ...options
   });
   const observerRef = _react.useRef.call(void 0, null);
-  _react2.default.useEffect(() => {
+  _react.useEffect.call(void 0, () => {
     if (!observerRef.current || enableManualFetch) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -141,33 +143,36 @@ function InfiniteDataFetcher({
     observer.observe(observerRef.current);
     return () => observer.disconnect();
   }, [enableManualFetch, fetchNextPage, hasNextPage, isFetchingNextPage]);
-  const renderFetchTrigger = _react2.default.useMemo(() => {
+  const renderFetchTrigger = _react.useMemo.call(void 0, () => {
     if (isFetchingNextPage && loadingComponent) {
       return loadingComponent;
     }
     if (!hasNextPage && noMoreDataComponent) {
       return noMoreDataComponent;
     }
-    return triggerComponent || /* @__PURE__ */ _react2.default.createElement(
+    return triggerComponent || /* @__PURE__ */ _jsxruntime.jsx.call(void 0, 
       "button",
       {
         type: "button",
         onClick: () => fetchNextPage(),
         "aria-label": "Load more",
-        disabled: isFetchingNextPage
-      },
-      isFetchingNextPage ? "Loading..." : "Load More"
+        disabled: isFetchingNextPage,
+        children: isFetchingNextPage ? "Loading..." : "Load More"
+      }
     );
   }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent]);
-  return /* @__PURE__ */ _react2.default.createElement(_react2.default.Fragment, null, children({
-    data: _optionalChain([data, 'optionalAccess', _3 => _3.pages]),
-    error,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch
-  }), enableManualFetch ? renderFetchTrigger : /* @__PURE__ */ _react2.default.createElement("div", { ref: observerRef }));
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+    children({
+      data: _optionalChain([data, 'optionalAccess', _3 => _3.pages]),
+      error,
+      isLoading,
+      isFetchingNextPage,
+      hasNextPage,
+      fetchNextPage,
+      refetch
+    }),
+    enableManualFetch ? renderFetchTrigger : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { ref: observerRef })
+  ] });
 }
 
 
