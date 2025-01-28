@@ -39,6 +39,10 @@ A generic data fetching component with simplified query management.
 #### Usage Example with query function
 
 ```typescript
+import { DataFetcher } from '@k4l3b4/query-adapters';
+import { fetchUserDetails } from './api';
+import UserProfile from './UserProfile';
+
 <DataFetcher
   queryKey={['user', userId]}
   queryFn={() => fetchUserDetails(userId)}
@@ -68,14 +72,14 @@ Notice the second query param in the URL having a `?` before it, this is because
 
 ```typescript
 <DataFetcher<TUser[], TError> // returned data and error will be of type TUser and TError respectively
-  queryKey={['user', userId]}
+  queryKey={['user']} // pass the query params that need to be tracked as queryKeys
   url={`/api/users/filter`}
   queryParams={{active: true, sort_by: "id", sort: "desc", page: 2}} 
   // this will produce a url like /api/users/filter?active=true&sort_by=id&sort=desc&page=2
   // cool right?😁
 >
   {({ data, error, isLoading, status }) => (
-    {isLoading ? <Spinner /> : <UserProfile user={data?.user} />}
+    {isLoading ? <Spinner /> : data?.map(user => <UserProfile user={user} />)}
   )}
 </DataFetcher>
 ```
