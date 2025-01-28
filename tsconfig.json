@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "declaration": true,
+        "rootDir": ".",
+        "declarationDir": "./dist",
+        "declarationMap": true,
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "jsx": "react",
+        "noEmit": false,
+        "resolveJsonModule": true,
+        "baseUrl": "./",
+        "paths": {
+            "src/*": [
+                "./src/*"
+            ],
+        },
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
