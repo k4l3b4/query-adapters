@@ -1,4 +1,5 @@
-import React, { createContext, useContext, type ReactNode } from 'react'
+import type React from 'react'
+import { createContext, useContext, type ReactNode } from 'react'
 
 
 // this provider will be used to set the default settings for the fetcher
