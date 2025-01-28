@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
     type InfiniteQueryObserverResult,
     type QueryFunctionContext,
@@ -8,9 +8,9 @@ import {
     type RefetchOptions,
     useInfiniteQuery,
 } from '@tanstack/react-query';
-import type { InfiniteDataFetcherProps, InfiniteDataResponse } from 'src/types';
-import { fetchWithSettings } from 'src/lib/fetcher';
-import { useFetcherSettings } from 'src/provider';
+import type { InfiniteDataFetcherProps, InfiniteDataResponse } from '../types';
+import { fetchWithSettings } from '../lib/fetcher';
+import { useFetcherSettings } from '../provider';
 
 
 export function InfiniteDataFetcher<TItem, TError>({
@@ -82,7 +82,7 @@ export function InfiniteDataFetcher<TItem, TError>({
 
     const observerRef = useRef<HTMLDivElement | null>(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!observerRef.current || enableManualFetch) return;
 
         const observer = new IntersectionObserver(
@@ -99,7 +99,8 @@ export function InfiniteDataFetcher<TItem, TError>({
         return () => observer.disconnect();
     }, [enableManualFetch, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-    const renderFetchTrigger = React.useMemo(() => {
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    const renderFetchTrigger = useMemo(() => {
         if (isFetchingNextPage && loadingComponent) {
             return loadingComponent;
         }
