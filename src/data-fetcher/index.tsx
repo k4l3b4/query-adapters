@@ -7,8 +7,8 @@ import {
     type UseQueryOptions,
     type QueryKey,
 } from '@tanstack/react-query';
-import { fetchWithSettings } from 'src/lib/fetcher';
-import { useFetcherSettings } from 'src/provider';
+import { fetchWithSettings } from '../lib/fetcher';
+import { useFetcherSettings } from '../provider';
 
 // Props for the DataFetcher component
 interface DataFetcherProps<TData, TError> {
