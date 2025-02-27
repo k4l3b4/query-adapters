@@ -40,7 +40,7 @@ export function InfiniteDataFetcher<TItem, TError>({
     }
 
     const fetcher = queryFn
-        ? (context: QueryFunctionContext<QueryKey, unknown>) =>
+        ? (context: QueryFunctionContext<QueryKey, number | unknown>) =>
             queryFn({ ...context, pageParam: context.pageParam ?? 1 })
         : url
             ? (context: QueryFunctionContext<QueryKey, unknown>) => {

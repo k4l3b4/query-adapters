@@ -19,7 +19,7 @@ export interface DataFetcherProps<TData, TError> {
     }) => ReactNode;
 }
 
-export type ImprovedQueryFn<TItem> = (context: QueryFunctionContext<QueryKey, number | undefined>) => Promise<InfiniteDataResponse<TItem>>;
+export type ImprovedQueryFn<TItem> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<InfiniteDataResponse<TItem>>;
 
 export interface InfiniteDataResponse<TItem> {
     pages: TItem[][];
@@ -30,7 +30,7 @@ export interface InfiniteDataFetcherProps<TItem, TError> {
     queryKey: QueryKey;
     queryFn?: ImprovedQueryFn<TItem>;
     url?: string;
-    queryParams?: (pageParam: unknown) => Record<string, unknown>;
+    queryParams?: (pageParam: number | unknown) => Record<string, unknown>;
     options?: Omit<
         UseInfiniteQueryOptions<
             InfiniteDataResponse<TItem>,
