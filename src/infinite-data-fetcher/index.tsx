@@ -99,7 +99,6 @@ export function InfiniteDataFetcher<TItem, TError>({
         return () => observer.disconnect();
     }, [enableManualFetch, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     const renderFetchTrigger = useMemo(() => {
         if (isFetchingNextPage && loadingComponent) {
             return loadingComponent;

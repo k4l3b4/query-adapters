@@ -33,7 +33,7 @@ interface DataFetcherProps<TData, TError> {
         refetch: UseQueryResult<TData, TError>['refetch'];
     }) => ReactNode;
 }
-type ImprovedQueryFn<TItem> = (context: QueryFunctionContext<QueryKey, unknown>) => Promise<InfiniteDataResponse<TItem>>;
+type ImprovedQueryFn<TItem> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<InfiniteDataResponse<TItem>>;
 interface InfiniteDataResponse<TItem> {
     pages: TItem[][];
     pageParams: unknown[];
@@ -42,7 +42,7 @@ interface InfiniteDataFetcherProps<TItem, TError> {
     queryKey: QueryKey;
     queryFn?: ImprovedQueryFn<TItem>;
     url?: string;
-    queryParams?: (pageParam: unknown) => Record<string, unknown>;
+    queryParams?: (pageParam: number | unknown) => Record<string, unknown>;
     options?: Omit<UseInfiniteQueryOptions<InfiniteDataResponse<TItem>, TError, InfiniteDataResponse<TItem>, InfiniteDataResponse<TItem>, QueryKey>, 'queryKey' | 'queryFn'>;
     children: (props: {
         data: TItem[][] | undefined;
