@@ -2,53 +2,53 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import {
-    type InfiniteQueryObserverResult,
+    type InfiniteData,
     type QueryFunctionContext,
     type QueryKey,
-    type RefetchOptions,
     useInfiniteQuery,
 } from '@tanstack/react-query';
-import type { InfiniteDataFetcherProps, InfiniteDataResponse } from '../types';
+import type { InfiniteDataFetcherProps } from '../types';
 import { fetchWithSettings } from '../lib/fetcher';
 import { useFetcherSettings } from '../provider';
 
-
-export function InfiniteDataFetcher<TItem, TError>({
+export function InfiniteDataFetcher<TPage, TError>({
     queryKey,
     queryFn,
     url,
     queryParams = () => ({}),
     options = {
-        getNextPageParam: (): unknown => {
-            throw new Error('getNextPageParam Function not implemented.');
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+            throw new Error("This function is not implemented")
         },
-        initialPageParam: 1
     },
     children,
     enableManualFetch = false,
     triggerComponent,
     loadingComponent,
     noMoreDataComponent,
-}: InfiniteDataFetcherProps<TItem, TError>) {
+}: InfiniteDataFetcherProps<TPage, TError>) {
     const { baseUrl, ...globalOptions } = useFetcherSettings();
+
     if (!queryKey) {
-        throw new Error('queryKey is required');
+        throw new Error('queryKey is required.');
     }
 
     if (queryFn && url) {
-        throw new Error('Only one of queryFn or url should be provided, which one did you expect the package to use smart ass...');
+        throw new Error('Only one of queryFn or url should be provided.');
     }
 
+    // Define the fetcher function
     const fetcher = queryFn
-        ? (context: QueryFunctionContext<QueryKey, number | unknown>) =>
+        ? (context: QueryFunctionContext<QueryKey, number>) =>
             queryFn({ ...context, pageParam: context.pageParam ?? 1 })
         : url
-            ? (context: QueryFunctionContext<QueryKey, unknown>) => {
+            ? (context: QueryFunctionContext<QueryKey, number>) => {
                 const queryParamsObj =
                     typeof queryParams === 'function'
                         ? queryParams(context.pageParam ?? 1)
                         : queryParams;
-                return fetchWithSettings<InfiniteDataResponse<TItem>>(
+                return fetchWithSettings<TPage>(
                     url,
                     undefined,
                     queryParamsObj,
@@ -70,14 +70,11 @@ export function InfiniteDataFetcher<TItem, TError>({
         hasNextPage,
         fetchNextPage,
         refetch,
-    } = useInfiniteQuery<
-        InfiniteDataResponse<TItem>,
-        TError,
-        InfiniteDataResponse<TItem>
-    >({
+    } = useInfiniteQuery<TPage, TError, InfiniteData<TPage>, QueryKey, number>({
         queryKey,
         queryFn: fetcher,
         ...options,
+        getNextPageParam: options?.getNextPageParam,
     });
 
     const observerRef = useRef<HTMLDivElement | null>(null);
@@ -95,7 +92,6 @@ export function InfiniteDataFetcher<TItem, TError>({
         );
 
         observer.observe(observerRef.current);
-
         return () => observer.disconnect();
     }, [enableManualFetch, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
@@ -116,7 +112,7 @@ export function InfiniteDataFetcher<TItem, TError>({
                 {isFetchingNextPage ? 'Loading...' : 'Load More'}
             </button>
         );
-    }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent]);
+    }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent, fetchNextPage]);
 
     return (
         <>
@@ -127,7 +123,7 @@ export function InfiniteDataFetcher<TItem, TError>({
                 isFetchingNextPage,
                 hasNextPage,
                 fetchNextPage,
-                refetch: refetch as (options?: RefetchOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteDataResponse<TItem>, TError>>,
+                refetch: refetch,
             })}
             {enableManualFetch ? renderFetchTrigger : <div ref={observerRef} />}
         </>
