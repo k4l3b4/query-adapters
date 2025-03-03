@@ -71,7 +71,7 @@ Notice the second query param in the URL having a `?` before it, this is because
 #### Usage Example with url string and queryParams⭐
 
 ```typescript
-<DataFetcher<TUser[], TError> // returned data and error will be of type TUser and TError respectively
+<DataFetcher<TUser[], TError> // returned data and error will be of type TUser[] and TError respectively
   queryKey={['user']} // pass the query params that need to be tracked as queryKeys
   url={`/api/users/filter`}
   queryParams={{active: true, sort_by: "id", sort: "desc", page: 2}} 
