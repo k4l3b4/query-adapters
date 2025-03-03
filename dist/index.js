@@ -85,10 +85,10 @@ function InfiniteDataFetcher({
   url,
   queryParams = () => ({}),
   options = {
-    getNextPageParam: () => {
-      throw new Error("getNextPageParam Function not implemented.");
-    },
-    initialPageParam: 1
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+      throw new Error("This function is not implemented");
+    }
   },
   children,
   enableManualFetch = false,
@@ -98,10 +98,10 @@ function InfiniteDataFetcher({
 }) {
   const { baseUrl, ...globalOptions } = useFetcherSettings();
   if (!queryKey) {
-    throw new Error("queryKey is required");
+    throw new Error("queryKey is required.");
   }
   if (queryFn && url) {
-    throw new Error("Only one of queryFn or url should be provided, which one did you expect the package to use smart ass...");
+    throw new Error("Only one of queryFn or url should be provided.");
   }
   const fetcher = queryFn ? (context) => queryFn({ ...context, pageParam: _nullishCoalesce(context.pageParam, () => ( 1)) }) : url ? (context) => {
     const queryParamsObj = typeof queryParams === "function" ? queryParams(_nullishCoalesce(context.pageParam, () => ( 1))) : queryParams;
@@ -127,7 +127,8 @@ function InfiniteDataFetcher({
   } = _reactquery.useInfiniteQuery.call(void 0, {
     queryKey,
     queryFn: fetcher,
-    ...options
+    ...options,
+    getNextPageParam: _optionalChain([options, 'optionalAccess', _3 => _3.getNextPageParam])
   });
   const observerRef = _react.useRef.call(void 0, null);
   _react.useEffect.call(void 0, () => {
@@ -160,10 +161,10 @@ function InfiniteDataFetcher({
         children: isFetchingNextPage ? "Loading..." : "Load More"
       }
     );
-  }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent]);
+  }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent, fetchNextPage]);
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
     children({
-      data: _optionalChain([data, 'optionalAccess', _3 => _3.pages]),
+      data: _optionalChain([data, 'optionalAccess', _4 => _4.pages]),
       error,
       isLoading,
       isFetchingNextPage,

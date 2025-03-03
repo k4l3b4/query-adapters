@@ -85,10 +85,10 @@ function InfiniteDataFetcher({
   url,
   queryParams = () => ({}),
   options = {
-    getNextPageParam: () => {
-      throw new Error("getNextPageParam Function not implemented.");
-    },
-    initialPageParam: 1
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
+      throw new Error("This function is not implemented");
+    }
   },
   children,
   enableManualFetch = false,
@@ -98,10 +98,10 @@ function InfiniteDataFetcher({
 }) {
   const { baseUrl, ...globalOptions } = useFetcherSettings();
   if (!queryKey) {
-    throw new Error("queryKey is required");
+    throw new Error("queryKey is required.");
   }
   if (queryFn && url) {
-    throw new Error("Only one of queryFn or url should be provided, which one did you expect the package to use smart ass...");
+    throw new Error("Only one of queryFn or url should be provided.");
   }
   const fetcher = queryFn ? (context) => queryFn({ ...context, pageParam: context.pageParam ?? 1 }) : url ? (context) => {
     const queryParamsObj = typeof queryParams === "function" ? queryParams(context.pageParam ?? 1) : queryParams;
@@ -127,7 +127,8 @@ function InfiniteDataFetcher({
   } = useInfiniteQuery({
     queryKey,
     queryFn: fetcher,
-    ...options
+    ...options,
+    getNextPageParam: options?.getNextPageParam
   });
   const observerRef = useRef(null);
   useEffect(() => {
@@ -160,7 +161,7 @@ function InfiniteDataFetcher({
         children: isFetchingNextPage ? "Loading..." : "Load More"
       }
     );
-  }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent]);
+  }, [isFetchingNextPage, hasNextPage, loadingComponent, noMoreDataComponent, triggerComponent, fetchNextPage]);
   return /* @__PURE__ */ jsxs(Fragment2, { children: [
     children({
       data: data?.pages,

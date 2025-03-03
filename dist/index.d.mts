@@ -1,6 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import React, { ReactNode } from 'react';
-import { QueryKey, UseQueryOptions, UseQueryResult, UseInfiniteQueryOptions, FetchNextPageOptions, InfiniteQueryObserverResult, RefetchOptions, QueryFunctionContext } from '@tanstack/react-query';
+import { QueryKey, UseQueryOptions, UseQueryResult, QueryFunction, UseInfiniteQueryOptions, InfiniteData, FetchNextPageOptions, InfiniteQueryObserverResult, RefetchOptions, QueryObserverResult, QueryFunctionContext } from '@tanstack/react-query';
 
 interface DataFetcherProps$1<TData, TError> {
     queryKey: QueryKey;
@@ -22,7 +22,7 @@ declare function DataFetcher<TData, TError>({ queryKey, queryFn, url, queryParam
 interface DataFetcherProps<TData, TError> {
     queryKey: QueryKey;
     url?: string;
-    queryFn?: () => Promise<TData>;
+    queryFn?: QueryFunction;
     queryParams?: Record<string, unknown>;
     options?: Omit<UseQueryOptions<TData, TError, TData, QueryKey>, 'queryKey' | 'queryFn'>;
     children: (props: {
@@ -33,25 +33,23 @@ interface DataFetcherProps<TData, TError> {
         refetch: UseQueryResult<TData, TError>['refetch'];
     }) => ReactNode;
 }
-type ImprovedQueryFn<TItem> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<InfiniteDataResponse<TItem>>;
-interface InfiniteDataResponse<TItem> {
-    pages: TItem[][];
-    pageParams: unknown[];
-}
-interface InfiniteDataFetcherProps<TItem, TError> {
+type ImprovedQueryFn<TPage> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<TPage>;
+interface InfiniteDataFetcherProps<TPage, TError> {
     queryKey: QueryKey;
-    queryFn?: ImprovedQueryFn<TItem>;
+    queryFn?: ImprovedQueryFn<TPage>;
     url?: string;
-    queryParams?: (pageParam: number | unknown) => Record<string, unknown>;
-    options?: Omit<UseInfiniteQueryOptions<InfiniteDataResponse<TItem>, TError, InfiniteDataResponse<TItem>, InfiniteDataResponse<TItem>, QueryKey>, 'queryKey' | 'queryFn'>;
+    queryParams?: (pageParam: number | undefined) => Record<string, unknown>;
+    options?: {
+        getNextPageParam: (lastPage: TPage, allPages: Array<TPage>, lastPageParam: number | undefined, allPageParams: number[]) => number | undefined;
+    } & Omit<UseInfiniteQueryOptions<TPage, TError, InfiniteData<TPage>, TPage, QueryKey, number>, 'queryKey' | 'queryFn' | 'getNextPageParam' | '_getNextPageParam'>;
     children: (props: {
-        data: TItem[][] | undefined;
+        data: InfiniteData<TPage>['pages'] | undefined;
         error: TError | null;
         isLoading: boolean;
         isFetchingNextPage: boolean;
         hasNextPage: boolean | undefined;
-        fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<InfiniteDataResponse<TItem>, TError>>;
-        refetch: (options?: RefetchOptions) => Promise<InfiniteQueryObserverResult<InfiniteDataResponse<TItem>, TError>>;
+        fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<InfiniteData<TPage>, TError>>;
+        refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<InfiniteData<TPage, unknown>, TError>>;
     }) => ReactNode;
     enableManualFetch?: boolean;
     triggerComponent?: ReactNode;
@@ -59,7 +57,7 @@ interface InfiniteDataFetcherProps<TItem, TError> {
     noMoreDataComponent?: ReactNode;
 }
 
-declare function InfiniteDataFetcher<TItem, TError>({ queryKey, queryFn, url, queryParams, options, children, enableManualFetch, triggerComponent, loadingComponent, noMoreDataComponent, }: InfiniteDataFetcherProps<TItem, TError>): react_jsx_runtime.JSX.Element;
+declare function InfiniteDataFetcher<TPage, TError>({ queryKey, queryFn, url, queryParams, options, children, enableManualFetch, triggerComponent, loadingComponent, noMoreDataComponent, }: InfiniteDataFetcherProps<TPage, TError>): react_jsx_runtime.JSX.Element;
 
 declare const fetchWithSettings: <T>(endpoint: string, requestOptions?: RequestInit, queryParams?: Record<string, unknown>, baseUrl?: string, globalOptions?: RequestInit) => Promise<T>;
 
