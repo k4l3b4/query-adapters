@@ -21,19 +21,8 @@ export interface DataFetcherProps<TData, TError> {
 
 // export type ImprovedQueryFn<TPage> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<InfiniteData<TPage>>;
 
-export type ImprovedQueryFn<TPage> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<TPage>;
+export type ImprovedQueryFn<TPage> = (context: QueryFunctionContext<QueryKey, number>) => Promise<TPage>;
 
-
-
-
-// export type GetNextPageParamFunction<TPageParams, TPage> = {
-//     getNextPageParam: (
-//         lastPage: TPage,  // Matches TQueryFnData
-//         allPages: Array<TPage>,
-//         lastPageParam: number | undefined,
-//         allPageParams: number
-//     ) => TPageParams | number | undefined;
-// };
 
 export interface InfiniteDataFetcherProps<TPage, TError> {
     queryKey: QueryKey;
