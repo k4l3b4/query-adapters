@@ -1,6 +1,6 @@
 {
 	"name": "@k4l3b4/query-adapters",
-	"version": "0.9.4",
+	"version": "0.9.5",
 	"description": "@tanstack/query fetching adapters to make your life a little bit easier.",
 	"files": ["dist", "README.md"],
 	"main": "./dist/index.js",

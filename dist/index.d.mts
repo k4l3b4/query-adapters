@@ -33,7 +33,7 @@ interface DataFetcherProps<TData, TError> {
         refetch: UseQueryResult<TData, TError>['refetch'];
     }) => ReactNode;
 }
-type ImprovedQueryFn<TPage> = (context: QueryFunctionContext<QueryKey, number | unknown>) => Promise<TPage>;
+type ImprovedQueryFn<TPage> = (context: QueryFunctionContext<QueryKey, number>) => Promise<TPage>;
 interface InfiniteDataFetcherProps<TPage, TError> {
     queryKey: QueryKey;
     queryFn?: ImprovedQueryFn<TPage>;
@@ -57,7 +57,10 @@ interface InfiniteDataFetcherProps<TPage, TError> {
     noMoreDataComponent?: ReactNode;
 }
 
-declare function InfiniteDataFetcher<TPage, TError>({ queryKey, queryFn, url, queryParams, options, children, enableManualFetch, triggerComponent, loadingComponent, noMoreDataComponent, }: InfiniteDataFetcherProps<TPage, TError>): react_jsx_runtime.JSX.Element;
+declare function InfiniteDataFetcher<TPage, TError>({ queryKey, queryFn, url, queryParams, options, children, enableManualFetch, triggerComponent, loadingComponent, noMoreDataComponent, threshold, rootMargin, }: InfiniteDataFetcherProps<TPage, TError> & {
+    threshold?: number | number[];
+    rootMargin?: string;
+}): react_jsx_runtime.JSX.Element;
 
 declare const fetchWithSettings: <T>(endpoint: string, requestOptions?: RequestInit, queryParams?: Record<string, unknown>, baseUrl?: string, globalOptions?: RequestInit) => Promise<T>;
 

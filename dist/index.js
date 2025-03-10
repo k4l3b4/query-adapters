@@ -94,7 +94,9 @@ function InfiniteDataFetcher({
   enableManualFetch = false,
   triggerComponent,
   loadingComponent,
-  noMoreDataComponent
+  noMoreDataComponent,
+  threshold = [0.75],
+  rootMargin = "0px"
 }) {
   const { baseUrl, ...globalOptions } = useFetcherSettings();
   if (!queryKey) {
@@ -139,7 +141,7 @@ function InfiniteDataFetcher({
           fetchNextPage();
         }
       },
-      { threshold: 1 }
+      { threshold, rootMargin }
     );
     observer.observe(observerRef.current);
     return () => observer.disconnect();
