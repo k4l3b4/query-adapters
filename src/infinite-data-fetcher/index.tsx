@@ -27,8 +27,14 @@ export function InfiniteDataFetcher<TPage, TError>({
     triggerComponent,
     loadingComponent,
     noMoreDataComponent,
-}: InfiniteDataFetcherProps<TPage, TError>) {
+    threshold = [0.75],
+    rootMargin = '0px',
+}: InfiniteDataFetcherProps<TPage, TError> & {
+    threshold?: number | number[];
+    rootMargin?: string;
+}) {
     const { baseUrl, ...globalOptions } = useFetcherSettings();
+
 
     if (!queryKey) {
         throw new Error('queryKey is required.');
@@ -88,7 +94,7 @@ export function InfiniteDataFetcher<TPage, TError>({
                     fetchNextPage();
                 }
             },
-            { threshold: 1.0 }
+            { threshold: threshold, rootMargin: rootMargin }
         );
 
         observer.observe(observerRef.current);
